@@ -1,0 +1,79 @@
+Qty	Value							Name					Package		
+31								HEADER-1X2ROUND					1X02_ROUND		
+16								LED5MM					unknown		
+26								LED					0805		
+59	0.1uF							Capacitor					0805		
+11	1 uF							Capacitor					0603		
+11	1.0pF							Capacitor					0805		
+11	1.5pF							Capacitor					0805		
+41	10k							Resistor					0805		
+21	10uF							Polarized Capacitor					B/3528-21W		
+16	150							Resistor					0805		
+14	1M							Resistor					0805		
+32	1k							Resistor					0805		
+24	1uF							Capacitor					0805		
+11	2.2nF							Capacitor					0805		
+11	2.7nH							Inductor					0805		
+44	20pF							Capacitor					0805		
+12	220							Resistor					0805		
+11	22k							Resistor					0805		
+11	2450AT42B100E							2450AT42B100E					XCVR_2450AT42B100E		
+11	3.9nH							Inductor					0805		
+11	33nF							Capacitor					0805		
+11	4.7pF							Capacitor					0805		
+11	8.2nH							Inductor					0805		
+2	APDS-9960							APDS-9960					unknown		
+6	ATMEGA328P_TQFP							ATMEGA328P_TQFP					TQFP32-08		
+13	B120-13-F							B120-13-F					SMA_DIO		
+8	BSS138							MOSFET-NWIDE					SOT23-WIDE		
+4	CON_HEADER_1X04							CON_HEADER_1X04					M1X4		
+11	CON_HEADER_PRG_AVR_ICSP-PTH							CON_HEADER_PRG_AVR_ICSP-PTH					HEADER_PRG_2X03		
+12	CON_TERMINAL_BLOCK_02-5MM							CON_TERMINAL_BLOCK_02-5MM					TERMINAL_BLOCK_2P_5		
+22	ECS-160-20-3X-TR							ECS-160-20-3X-TR					XTAL_ECS-160-20-3X-TR		
+11	MOMENTARY-SWITCH-SPST-PTH-6.0MM							MOMENTARY-SWITCH-SPST-PTH-6.0MM					TACTILE_SWITCH_PTH_6.0MM		
+2	NCP1117ST50T3G							NCP1117ST50T3G					SOT230P700X180-4N		
+11	NRF24L01SMD							NRF24L01SMD					QFN20-4X4MM		
+4	STMICROELECTRONICS_2STR1215STMICROELECTRONICS_2STR1215_0_0							STMICROELECTRONICS_2STR1215_0					STMICROELECTRONICS_2STR1215_0		
+11	TPS77033							TPS77033					SOT23-DBV		
+2								GYRO_L3G2400D					L3G4200D_LGA16L		
+2								JUMPER3					unknown		
+2								SJ					unknown		
+2								USBMINIB					USB-MINIB		
+6	0.1 uF							Capacitor					0603		
+2	0.22uF							Capacitor					0805		
+4	100k							Resistor					0805		
+2	10nF							Capacitor					0805		
+8	10uF							Capacitor					0805		
+2	2.2k							Resistor					0805		
+9	200k							Resistor					0805		
+2	270							Resistor					0805		
+2	4.7uF							Capacitor					0805		
+15	470							Resistor					0805		
+2	470nF							Capacitor					0805		
+5	ATMEGA1284P-AU							ATMEGA1284P-AU					QFP80P1200X1200X120-44N		
+2	BMP180							BMP180					unknown		
+2	BUK9K13-60EXSMD							BUK9K13-60EXSMD					TRANS_BUK7K12-60EX		
+6	CON_HEADER_1X02-PTH							CON_HEADER_1X02-PTH					M1X2		
+4	CON_TERMINAL_BLOCK_03-5MM							CON_TERMINAL_BLOCK_03-5MM					TERMINAL_BLOCK_3P_5		
+5	FT232RL							FT232RLSSOP					SSOP28DB		
+5	LAIRD_MI0805K400R-10LAIRD_MI0805K400R-10_0_0							LAIRD_MI0805K400R-10_0					LAIRD_MI0805K400R-10_0		
+2	LM338T							LM338T					TO254P1054X2934X470-3		
+2	LSM303DLHC							LSM303DLHC					LGA-14		
+2	SS5P6-M3/86A							SS5P6-M3/86A					TO-277A(SMPC)		
+6	TPS77350							TPS77350					DGK_S-PDSO-G8		
+3								HEADER-1X2					1X02_OVAL		
+3								HEADER-1X3ROUND					1X03_ROUND		
+6								HEADER-1X4ROUND					1X04_ROUND		
+3								HEADER-1X6ROUND					1X06_ROUND		
+12								LED					CHIP-LED0805		
+3								SOLDERJUMPERCLOSED					SOLDERJUMPER_CLOSEDWIRE		
+6	1.87M							Resistor					0805		
+3	100uF							Polarized Capacitor					B/3528-21W		
+3	2.2uF							Capacitor					0805		
+3	2k							Resistor					0805		
+6	340k							Resistor					0805		
+3	MCP73831/OT							MCP73831/OT					SOT23-5L		
+6	MMUN2133LT1G							MMUN2133LT1G					SOT95P240X111-3N		
+3	TPS61090RSAR							TPS61090RSAR					QFN65P400X400X100-17N		
+3	WUERTH_ELEKTRONIK_7447789006WUERTH_ELEKTRONIK_7447789006_0_0							WUERTH_ELEKTRONIK_7447789006_0					WUERTH_ELEKTRONIK_7447789006_0		
+4								CONN_03-SCREW-5MM					SCREWTERMINAL-5MM-3		
