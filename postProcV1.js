@@ -9,7 +9,8 @@ const { readdir } = require('fs').promises;
 DATA STUFF
 */
 const basePath = "C:/Users/Aaron/OneDrive/Documents/EAGLE/projects";
-const outFileName = "BOMconcat.txt";
+const outFileNameSimple = "BOMconcatSimple.txt";
+const outFileNameRaw = "BOMconcatRaw.txt";
 const skipFirstLine = true; //skip first line in CSV (it only has a header)
 
 //Check folder
@@ -141,6 +142,34 @@ const processCSV = function(csvPath, boardCount) {
 				}
 				console.log("Processing CSV ok");
 
+				function getTabs(loop) {
+					if (loop == 0) {
+						return "\t";
+					} else if (loop == 1) {
+						return "\t\t\t\t\t\t\t";
+					} else if (loop == 2) {
+						return "\t\t\t\t\t";
+					} else {
+						return "\t\t";
+					}
+				}
+
+				let processedComponents = [];
+				let interm = Object.keys(components[0]).map(item => {return item[0].toUpperCase()+item.substring(1)}); //Add header
+				let addstr = "";
+				for (let i=0; i<interm.length; i++) {
+					addstr+=interm[i]+getTabs(i);
+				}
+				processedComponents.push(addstr);
+
+				for (let i=0; i<components.length; i++) {
+					let str = "";
+					let keys = Object.keys(components[i]);
+					for (let j=0; j<keys.length; j++) {
+						str+=components[i][keys[j]]+getTabs(j);
+					}
+					processedComponents.push(str);
+				}
 
 				let choices = ["Add another CSV", "Dump to terminal", "Dump to file"];
 				inquirer.prompt({
@@ -154,14 +183,23 @@ const processCSV = function(csvPath, boardCount) {
 					if (choice == choices[0]) {
 						main(); //go back to main
 					} else if (choice == choices[1]) {
-						console.log(JSON.stringify(components, null, 4));
+						for (let i=0; i<processedComponents.length; i++) {
+							console.log(processedComponents[i]);
+						}
 					} else if (choice == choices[2]) {
-						console.log("Writing to "+outFileName+" in "+basePath);
-						fs.writeFile(path.join(basePath,outFileName), JSON.stringify(components, null, 4), function(err) {
+						console.log("Writing to "+outFileNameRaw+"and"+outFileNameSimple+" in "+basePath);
+						fs.writeFile(path.join(basePath,outFileNameRaw), JSON.stringify(components, null, 4), function(err) {
 							if (err) {
 								console.error("Error writing file: "+err);
 							} else {
-								console.log("Writing file OK");
+								console.log("Writing file raw OK");
+							}
+						})
+						fs.writeFile(path.join(basePath,outFileNameSimple), processedComponents.join("\n"), function(err) {
+							if (err) {
+								console.error("Error writing file: "+err);
+							} else {
+								console.log("Writing file simple OK");
 							}
 						})
 					}
