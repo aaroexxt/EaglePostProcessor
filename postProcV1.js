@@ -6,6 +6,14 @@ const { resolve } = require('path');
 const { readdir } = require('fs').promises;
 
 /*
+TODOS:
+- fix issues with tab spacing in simplified file
+- add header tag with amount and name of projects being generated in final outputs
+- add check that only displays eagle projects with valid CSV files
+*/
+
+
+/*
 DATA STUFF
 */
 const basePath = "C:/Users/Aaron/OneDrive/Documents/EAGLE/projects";
@@ -220,14 +228,18 @@ const packageReplaceRules = [
 ["C0603","0603"],
 ["R0603","0603"],
 ["SMD",""],
-["SML",""]
+["SML",""],
+["CLOSEDWIRE_",""]
 ];
 
 const nameReplaceRules = [
 ["R-US_","Resistor"],
 ["C-US","Capacitor"],
 ["CPOL-US","Polarized Capacitor"],
-["INDUCTOR","Inductor"]
+["INDUCTOR","Inductor"],
+["CONN_",""],
+["CON_",""],
+["SMD",""]
 ]
 
 const ignoreKeys = [
