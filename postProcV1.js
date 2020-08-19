@@ -1,3 +1,6 @@
+//postProcV1.js by Aaron Becker
+//Proudly written between 3-6am on Aug 3, 2020 and later updated Aug 19
+
 const fs = require('fs');
 //const parse = require('csv-parse');
 const path = require('path');
@@ -8,7 +11,6 @@ const { readdir } = require('fs').promises;
 /*
 TODOS:
 - fix issues with tab spacing in simplified file
-- add header tag with amount and name of projects being generated in final outputs
 - add check that only displays eagle projects with valid CSV files
 */
 
@@ -20,6 +22,7 @@ const basePath = "C:/Users/Aaron/OneDrive/Documents/EAGLE/projects";
 const outFileNameSimple = "BOMconcatSimple.txt";
 const outFileNameRaw = "BOMconcatRaw.txt";
 const skipFirstLine = true; //skip first line in CSV (it only has a header)
+let concMode = true; //true = add to BOM, false = subtract from BOM
 
 //Check folder
 console.log("1/7: reading base folder");
@@ -112,7 +115,7 @@ const processCSV = function(csvPath, boardCount) {
 
 					//Create new component as object
 					let cObject = {
-						qty: Number(output[i][0])*boardCount,
+						qty: ((concMode)?1:-1)*Number(output[i][0])*boardCount, //could be a "negative" quantity if it's being subtracted. Although these will always be pruned out before printing
 						value: output[i][1],
 						name: name,
 						package: package
@@ -150,35 +153,6 @@ const processCSV = function(csvPath, boardCount) {
 				}
 				console.log("Processing CSV ok");
 
-				function getTabs(loop) {
-					if (loop == 0) {
-						return "\t";
-					} else if (loop == 1) {
-						return "\t\t\t\t\t\t\t";
-					} else if (loop == 2) {
-						return "\t\t\t\t\t";
-					} else {
-						return "\t\t";
-					}
-				}
-
-				let processedComponents = [];
-				let interm = Object.keys(components[0]).map(item => {return item[0].toUpperCase()+item.substring(1)}); //Add header
-				let addstr = "";
-				for (let i=0; i<interm.length; i++) {
-					addstr+=interm[i]+getTabs(i);
-				}
-				processedComponents.push(addstr);
-
-				for (let i=0; i<components.length; i++) {
-					let str = "";
-					let keys = Object.keys(components[i]);
-					for (let j=0; j<keys.length; j++) {
-						str+=components[i][keys[j]]+getTabs(j);
-					}
-					processedComponents.push(str);
-				}
-
 				let choices = ["Add another CSV", "Dump to terminal", "Dump to file"];
 				inquirer.prompt({
 					name: "Next action",
@@ -191,19 +165,33 @@ const processCSV = function(csvPath, boardCount) {
 					if (choice == choices[0]) {
 						main(); //go back to main
 					} else if (choice == choices[1]) {
-						for (let i=0; i<processedComponents.length; i++) {
-							console.log(processedComponents[i]);
+						//Generate final lists from parts
+						prune();
+						processedComponents = formatComponentList();
+						processedProjects = formatProjectList();
+						processedProjects.push(""); //add attl \n before components
+						finalBOM = processedProjects.concat(processedComponents);
+
+						for (let i=0; i<finalBOM.length; i++) {
+							console.log(finalBOM[i]);
 						}
 					} else if (choice == choices[2]) {
+						//Generate final lists from parts
+						prune();
+						processedComponents = formatComponentList();
+						processedProjects = formatProjectList();
+						processedProjects.push(""); //add attl \n before components
+						finalBOM = processedProjects.concat(processedComponents);
+
 						console.log("Writing to "+outFileNameRaw+"and"+outFileNameSimple+" in "+basePath);
-						fs.writeFile(path.join(basePath,outFileNameRaw), JSON.stringify(components, null, 4), function(err) {
+						fs.writeFile(path.join(basePath,outFileNameRaw), JSON.stringify(finalBOM, null, 4), function(err) {
 							if (err) {
 								console.error("Error writing file: "+err);
 							} else {
 								console.log("Writing file raw OK");
 							}
 						})
-						fs.writeFile(path.join(basePath,outFileNameSimple), processedComponents.join("\n"), function(err) {
+						fs.writeFile(path.join(basePath,outFileNameSimple), finalBOM.join("\n"), function(err) {
 							if (err) {
 								console.error("Error writing file: "+err);
 							} else {
@@ -219,8 +207,73 @@ const processCSV = function(csvPath, boardCount) {
 	})
 }
 
+//ONLY run this at the end (before exporting final list to terminal or file) otherwise component values will get messed up and your BOM won't be right :()
+function prune() {
+	let newComps = [];
+	let pruneCount = 0;
+	const oLen = components.length; //set to initial length
+	for (let i=0; i<components.length; i++) {
+		if (components[i].qty <= 0) {
+			pruneCount++;
+		} else {
+			newComps.push(components[i]);
+		}
+	}
+	components = newComps;
+	console.log("Pruned "+pruneCount+" component items out of an initial "+oLen);
+}
 
-let components = [];
+//Adds tab/spacing to component list and returns
+function formatComponentList() {
+	let processedComponents = ["----- Components in BOM -----"];
+	if (components.length == 0) {
+		processedComponents.push("<<BOM EMPTY>>");
+		return processedComponents;
+	}
+	let interm = Object.keys(components[0]).map(item => {return item[0].toUpperCase()+item.substring(1)}); //Add header
+	let addstr = "";
+	for (let i=0; i<interm.length; i++) {
+		addstr+=interm[i]+getTabs(i);
+	}
+	processedComponents.push(addstr);
+
+	for (let i=0; i<components.length; i++) {
+		let str = "";
+		let keys = Object.keys(components[i]);
+		for (let j=0; j<keys.length; j++) {
+			str+=components[i][keys[j]]+getTabs(j);
+		}
+		processedComponents.push(str);
+	}
+	return processedComponents;
+}
+function getTabs(loop) {
+	if (loop == 0) {
+		return "\t";
+	} else if (loop == 1) {
+		return "\t\t\t\t\t\t\t";
+	} else if (loop == 2) {
+		return "\t\t\t\t\t";
+	} else {
+		return "\t\t";
+	}
+}
+
+function formatProjectList() {
+	let processedProjects = ["----- Projects in BOM -----"];
+	for (let i=0; i<projects.length; i++) {
+		processedProjects.push(projects[i].qty+"x "+projects[i].name);
+	}
+	return processedProjects;
+}
+
+
+/*
+IMPORTANT RUNTIME VARIABLES; keeps track of component list and project origins
+*/
+
+var projects = [];
+var components = [];
 
 const packageReplaceRules = [
 ["C0805","0805"],
@@ -253,56 +306,80 @@ function main() {
 		type: "list",
 		choices: dirs
 	}).then(choice => {
-		let keys = Object.keys(choice);
-		choice = choice[keys[0]];
-
 		inquirer.prompt([{
-			name: "How many of this project do you want to make?",
-			default: 1,
-			type: "number",
-		}]).then(boardCount => {
-			let keys = Object.keys(boardCount);
-			boardCount = Number(boardCount[keys[0]]);
-			if (isNaN(boardCount) || boardCount < 1) {
-				console.error("Board count invalid");
-				process.exit(1);
-			}
+			type: "list",
+			name: "addMode",
+			message: "Remove from or add to BOM?",
+			choices: ["Remove","Add"],
+			default: "Add"
+		}]).then(modeSel => {
+			concMode = modeSel.addMode=="Add"?true:false;
 
-			console.log("3/7: reading files");
-			getFiles(choice).then(files => {
-				console.log("4/7: finding csvs");
-				let csvs = [];
-				for (let i=0; i<files.length; i++) {
-					if (files[i].toLowerCase().indexOf(".csv") > -1) {
-						csvs.push(files[i]);
+			let keys = Object.keys(choice);
+			choice = choice[keys[0]];
+
+			inquirer.prompt([{
+				name: "How many of this project do you want to "+((concMode)?"make":"remove")+"?",
+				default: 1,
+				type: "number",
+			}]).then(boardCount => {
+				let keys = Object.keys(boardCount);
+				boardCount = Number(boardCount[keys[0]]);
+				if (isNaN(boardCount) || boardCount < 1) {
+					console.error("Board count invalid");
+					process.exit(1);
+				}
+
+				console.log("3/7: reading files");
+				getFiles(choice).then(files => {
+					console.log("4/7: finding csvs");
+					let csvs = [];
+					for (let i=0; i<files.length; i++) {
+						if (files[i].toLowerCase().indexOf(".csv") > -1) {
+							csvs.push(files[i]);
+						}
 					}
-				}
 
-				switch (csvs.length) {
-					case 0:
-						console.error("CSV length 0, no csv found!");
-						return reject();
-						break;
-					case 1:
-						processCSV(csvs[0], boardCount);
-						break;
-					default:
-						inquirer.prompt({
-							name: "Pick a CSV file",
-							type: "list",
-							choices: csvs
-						}).then(choice => {
-							let keys = Object.keys(choice);
-							processCSV(choice[keys[0]], boardCount);
-						}).catch(err => {
-							console.error(err);
-						});
-						break;
-				}
+					switch (csvs.length) {
+						case 0:
+							console.error("CSV length 0, no csv found!");
+							break;
+						case 1:
+							//Push to project count
+							projects.push({
+								path: choice,
+								name: csvs[0].substring(csvs[0].lastIndexOf("\\")).substring(1).split(".csv")[0], //Do NOT ask about this line either, prolly only works on windows and its jank
+								qty: boardCount*((concMode)?1:-1)
+							});
+
+							processCSV(csvs[0], boardCount);
+							break;
+						default:
+							inquirer.prompt({
+								name: "Pick a CSV file",
+								type: "list",
+								choices: csvs
+							}).then(csvchoice => {
+								let keys = Object.keys(csvchoice);
+								//Push to project count
+								projects.push({
+									path: choice,
+									name: csvchoice[keys[0]].substring(csvchoice[keys[0]].lastIndexOf("\\")).substring(1).split(".csv")[0], //Do NOT ask about this line either, prolly only works on windows and its jank
+									qty: boardCount*((concMode)?1:-1)
+								});
+								processCSV(csvchoice[keys[0]], boardCount);
+							}).catch(err => {
+								console.error(err);
+							});
+							break;
+					}
+				});
+			}).catch(err => {
+				console.error(err);
 			});
-		}).catch(err => {
-			console.error(err);
-		});
+		})
+
+		
 	}).catch(err => {
 		console.error(err)
 	});
