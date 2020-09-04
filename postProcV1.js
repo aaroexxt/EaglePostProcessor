@@ -12,6 +12,8 @@ const { readdir } = require('fs').promises;
 TODOS:
 - fix issues with tab spacing in simplified file
 - add check that only displays eagle projects with valid CSV files
+- remove spaces when checking for matches
+- cut names/descriptions to certain max chars to make everything fit
 */
 
 
