@@ -20,7 +20,7 @@ TODOS:
 /*
 DATA STUFF
 */
-const basePath = "C:/Users/Aaron/OneDrive/Documents/EAGLE/projects";
+const basePath = "/Users/Aaron/Documents/EAGLE/projects"; //"C:/Users/Aaron/OneDrive/Documents/EAGLE/projects";
 const outFileNameSimple = "BOMconcatSimple.txt";
 const outFileNameRaw = "BOMconcatRaw.txt";
 const skipFirstLine = true; //skip first line in CSV (it only has a header)
